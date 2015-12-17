@@ -34,6 +34,7 @@ Background bg;
 FlameMgr flameMgr;
 Treasure treasure;
 HPDisplay hpDisplay;
+Bullet[] bullet = new Bullet[5];
 
 boolean isMovingUp;
 boolean isMovingDown;
@@ -42,7 +43,10 @@ boolean isMovingRight;
 
 int time;
 int wait = 4000;
-
+int bulletNum = 0;
+boolean []bulletNumLimit = new boolean [5];
+int bNum = 0;
+int eNum = 0;
 
 
 void setup () {
@@ -52,6 +56,9 @@ void setup () {
 	treasure = new Treasure();
 	hpDisplay = new HPDisplay();
 	fighter = new Fighter(20);
+for(int i = 0; i<5; i++){
+  bullet[i] = new Bullet(fighter.x,fighter.y);
+}
 }
 
 void draw()
@@ -86,12 +93,38 @@ void draw()
 			}
 		}
 		// 這地方應該加入Fighter 血量顯示UI
-		
+		 hpDisplay.updateWithFighterHP(fighter.hp);
 	}
 	else if (state == GameState.END) {
 		bg.draw();
 	}
-}
+//bullet
+for (int i = 0; i < 5; i ++){
+  if(bulletNumLimit[i] == true){
+        bullet[i].draw();
+        bullet[i].move();
+      }
+      if(bullet[i].x<0){
+        bulletNumLimit[i] = false;
+      }
+  }
+
+for(int j = 0; j < enemyCount; j++){
+for (int i = 0; i < 5; i ++){
+    if(enemys[j] != null){
+    if(bulletNumLimit[i] == true){
+      if(isHit(bullet[i].x, bullet[i].y, 31, 27, enemys[j].x, enemys[j].y, 61, 61)){
+          flameMgr.addFlame(enemys[j].x, enemys[j].y);
+          bulletNumLimit[i] = false;
+          enemys[j] = null;
+      }else if(bullet[i].isOutOfBorder()){
+        bulletNumLimit[i] = false;
+      }
+      }
+      }
+  }
+    }
+  }
 boolean isHit(int ax, int ay, int aw, int ah, int bx, int by, int bw, int bh)
 {
 	// Collision x-axis?
@@ -136,4 +169,3 @@ void keyReleased(){
     }
   }
 }
-

@@ -32,7 +32,17 @@ class Fighter{
 	}
 
 	void shoot() {
-		
+  if ( bulletNum > 4 ) {
+        bulletNum = 0;
+      }
+  	if (bulletNumLimit[bulletNum] == false){
+        bulletNumLimit[bulletNum] = true;
+       bullet[bulletNum].x = fighter.x;
+       bullet[bulletNum].y  = fighter.y;
+        bulletNum ++;
+      }
+
+      
 	}
 
 	void move(int direct) {
